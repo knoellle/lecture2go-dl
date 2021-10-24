@@ -34,14 +34,15 @@ fn main() -> anyhow::Result<()> {
     for item in &rss.channel.items {
         println!("{}\n\t{}", item.title, item.link);
         let filename = item.title.clone() + ".mp4";
-        if std::path::Path::new(filename.as_str()).exists() {
-            println!("File {} exists, skipping download", filename);
+        let filepath = std::path::Path::new(&filename);
+        if filepath.exists() {
+            println!("File {} exists, skipping download", filepath.to_str().unwrap());
         } else {
             println!("\tDownloading...");
             let output = youtube_dl::YoutubeDl::new(item.link.as_str())
                 .extra_arg("--no-check-certificate")
                 .download_video(true)
-                .extra_arg("-o".to_owned() + filename.as_str())
+                .extra_arg("-o".to_owned() + filepath.to_str().unwrap())
                 .run()?;
             println!("{:?}", output);
         }
