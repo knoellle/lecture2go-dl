@@ -26,8 +26,27 @@ fn get_feed(url: &str) -> anyhow::Result<String> {
 }
 
 fn main() -> anyhow::Result<()> {
-    let xml = get_feed("")?;
+    let url = std::fs::read_to_string("feed.url")
+        .expect("Could not read \"feed.url\". Make sure it exists");
+    let xml = get_feed(url.as_str())?;
     let rss: RSS = from_str(xml.as_str())?;
-    println!("{:?}", rss.channel);
+    println!("Found videos:");
+    for item in &rss.channel.items {
+        println!("{}\n\t{}", item.title, item.link);
+        let filename = item.title.clone() + ".mp4";
+        if std::path::Path::new(filename.as_str()).exists() {
+            println!("File {} exists, skipping download", filename);
+        } else {
+            println!("\tDownloading...");
+            let output = youtube_dl::YoutubeDl::new(item.link.as_str())
+                .extra_arg("--no-check-certificate")
+                .download_video(true)
+                .extra_arg("-o".to_owned() + filename.as_str())
+                .run()?;
+            println!("{:?}", output);
+        }
+        println!();
+    }
+
     Ok(())
 }
