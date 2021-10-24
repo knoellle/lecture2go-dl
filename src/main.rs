@@ -30,6 +30,7 @@ fn main() -> anyhow::Result<()> {
         .expect("Could not read \"feed.url\". Make sure it exists");
     let xml = get_feed(url.as_str())?;
     let rss: RSS = from_str(xml.as_str())?;
+
     println!("Found videos:");
     for item in &rss.channel.items {
         println!("{}\n\t{}", item.title, item.link);
@@ -43,9 +44,10 @@ fn main() -> anyhow::Result<()> {
         } else {
             println!("Downloading...");
             youtube_dl::YoutubeDl::new(item.link.as_str())
-                .extra_arg("--no-check-certificate")
                 .download_video(true)
-                .extra_arg("-o".to_owned() + filepath.to_str().unwrap())
+                .extra_arg("--no-check-certificate")
+                .extra_arg("--output".to_owned())
+                .extra_arg(filepath.to_str().unwrap())
                 .run()?;
             println!("Done, filesize: {} bytes", filepath.metadata()?.len());
         }
