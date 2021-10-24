@@ -31,6 +31,7 @@ fn main() -> anyhow::Result<()> {
     let xml = get_feed(url.as_str())?;
     let rss: RSS = from_str(xml.as_str())?;
 
+    let mut downloaded_count = 0;
     println!("Found videos:");
     for item in &rss.channel.items {
         println!("{}\n\t{}", item.title, item.link);
@@ -50,9 +51,12 @@ fn main() -> anyhow::Result<()> {
                 .extra_arg(filepath.to_str().unwrap())
                 .run()?;
             println!("Done, filesize: {} bytes", filepath.metadata()?.len());
+            downloaded_count += 1;
         }
         println!();
     }
+
+    println!("Done, processed {} videos ({} new)", rss.channel.items.len(), downloaded_count);
 
     Ok(())
 }
