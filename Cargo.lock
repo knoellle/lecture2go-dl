@@ -996,6 +996,7 @@ dependencies = [
 [[package]]
 name = "youtube_dl"
 version = "0.6.3"
+source = "git+https://github.com/knoellle/youtube-dl-rs#bca1ee9cc9c59363b03f23283a911de6bdc8e166"
 dependencies = [
  "log",
  "serde",
