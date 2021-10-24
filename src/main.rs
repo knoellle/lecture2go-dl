@@ -36,15 +36,18 @@ fn main() -> anyhow::Result<()> {
         let filename = item.title.clone() + ".mp4";
         let filepath = std::path::Path::new(&filename);
         if filepath.exists() {
-            println!("File {} exists, skipping download", filepath.to_str().unwrap());
+            println!(
+                "File {} exists, skipping download",
+                filepath.to_str().unwrap()
+            );
         } else {
-            println!("\tDownloading...");
-            let output = youtube_dl::YoutubeDl::new(item.link.as_str())
+            println!("Downloading...");
+            youtube_dl::YoutubeDl::new(item.link.as_str())
                 .extra_arg("--no-check-certificate")
                 .download_video(true)
                 .extra_arg("-o".to_owned() + filepath.to_str().unwrap())
                 .run()?;
-            println!("{:?}", output);
+            println!("Done, filesize: {} bytes", filepath.metadata()?.len());
         }
         println!();
     }
