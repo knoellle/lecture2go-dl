@@ -1,0 +1,12 @@
+[package]
+name = "lecture2go-dl"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+quick-xml = { version = "0.22.0", features = ["serialize"] }
+anyhow = "1.0.44"
+reqwest = { version = "0.11.6", features = ["blocking"] }
+serde = { version = "1.0.130", features = ["derive"] }
