@@ -1,6 +1,3 @@
-extern crate quick_xml;
-extern crate serde;
-
 use quick_xml::de::from_str;
 use serde::Deserialize;
 
